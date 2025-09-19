@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LATIHAN SOAL TKA MATEMATIKA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            width: 95%;
+            max-width: 1200px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #f9f9f9;
+            border-left: 1px solid #eee;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .header h1 {
+            color: #333;
+            margin: 0;
+            font-size: 1.8em;
+        }
+
+        .timer-box, .current-time-box {
+            background-color: #e0f7fa;
+            border: 1px solid #b2ebf2;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            color: #00796b;
+        }
+        .timer-box strong, .current-time-box strong {
+            display: block;
+            margin-top: 5px;
+            font-size: 1.2em;
+            color: #004d40;
+        }
+
+        .question-navigation {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+
+        .question-navigation h3 {
+            margin-top: 0;
+            color: #555;
+            font-size: 1.2em;
+        }
+
+        .question-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .question-list button {
+            width: 40px;
+            height: 40px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            color: #333;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .question-list button:hover {
+            background-color: #ddd;
+            border-color: #bbb;
+        }
+
+        .question-list button.active {
+            background-color: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
+
+        .question-list button.answered {
+            background-color: #28a745;
+            color: #fff;
+            border-color: #28a745;
+        }
+        
+        .question-list button.answered.active {
+            background-color: #007bff; /* Active answered question retains blue */
+            border-color: #007bff;
+        }
+
+        .question-area {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+
+        .question-area h2 {
+            color: #333;
+            font-size: 1.4em;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+        
+        .question-text p {
+            margin-bottom: 10px;
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .options input[type="radio"] {
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .navigation-buttons {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .navigation-buttons button, .finish-button button {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+
+        .navigation-buttons button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .prev-button {
+            background-color: #6c757d;
+            color: #fff;
+        }
+        .prev-button:hover:enabled {
+            background-color: #5a6268;
+        }
+
+        .next-button {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .next-button:hover:enabled {
+            background-color: #0056b3;
+        }
+
+        .finish-button {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .finish-button button {
+            background-color: #dc3545;
+            color: #fff;
+            padding: 12px 25px;
+            font-size: 1.1em;
+        }
+        .finish-button button:hover {
+            background-color: #c82333;
+        }
+
+        .score-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .modal-content h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .modal-content p {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+
+        .modal-content .score-value {
+            font-size: 2.5em;
+            color: #28a745;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .modal-content button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s;
+        }
+
+        .modal-content button:hover {
+            background-color: #0056b3;
+        }
+
+        .question-text img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 15px auto;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+
+        /* Review mode specific styles */
+        .review-mode-info {
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .review-solution-button {
+            background-color: #17a2b8;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+        .review-solution-button:hover {
+            background-color: #138496;
+        }
+        .solution-text {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #e2f0fb;
+            border: 1px solid #bce8f1;
+            border-radius: 5px;
+            display: none; /* Hidden by default */
+        }
+        .solution-text p {
+            margin-bottom: 5px;
+        }
+        .correct-answer-label {
+            font-weight: bold;
+            color: #28a745; /* Green for correct answer */
+        }
+        .user-answer-label {
+            font-weight: bold;
+            color: #007bff; /* Blue for user's answer */
+        }
+        .wrong-answer-label {
+            font-weight: bold;
+            color: #dc3545; /* Red if user's answer is wrong */
+        }
+        .options.review label input[type="radio"] {
+            pointer-events: none; /* Disable radio button interaction in review */
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                width: 100%;
+                margin: 0;
+                border-radius: 0;
+            }
+            .sidebar {
+                width: 100%;
+                border-left: none;
+                border-bottom: 1px solid #eee;
+                order: 2;
+            }
+            .main-content {
+                order: 1;
+            }
+            .question-list {
+                grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
+                gap: 5px;
+            }
+            .question-list button {
+                width: 35px;
+                height: 35px;
+                font-size: 0.8em;
+            }
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .finish-button button {
+                width: 100%;
+            }
+        }
+    </style>
+    <!-- Load MathJax for LaTeX rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+    <div class="container">
+        <div class="main-content">
+            <div class="header">
+                <h1>LATIHAN SOAL TKA MATEMATIKA - 04</h1>
+                <div id="current-time" class="current-time-box"><strong></strong></div>
+            </div>
+            
+            <div id="question-area" class="question-area">
+                <!-- Question will be loaded here by JavaScript -->
+            </div>
+
+            <div id="exam-navigation" class="navigation-buttons">
+                <button id="prev-button" class="prev-button" disabled>Previous</button>
+                <button id="next-button" class="next-button">Next</button>
+            </div>
+            <div id="exam-finish" class="finish-button">
+                <button id="finish-exam-button">Selesai Ujian</button>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="timer-box">
+                Waktu Tersisa: <strong id="countdown-timer">00:00:00</strong>
+            </div>
+            <div class="question-navigation">
+                <h3>Nomor Soal</h3>
+                <div id="question-list" class="question-list">
+                    <!-- Question navigation buttons will be loaded here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Score Modal -->
+    <div id="scoreModal" class="score-modal">
+        <div class="modal-content">
+            <h2>Ujian Selesai!</h2>
+            <p>Anda telah menyelesaikan ujian.</p>
+            <p>Skor Anda:</p>
+            <div id="finalScore" class="score-value"></div>
+            <p id="feedbackMessage"></p>
+            <button id="closeModal">Lihat Hasil dan Solusi</button>
+        </div>
+    </div>
+
+    <script>
+        // Array of questions, options, correct answers, and solutions
+        const questions = [
+            {
+                id: 1,
+                text: "Jika \\(\\log_2(x+1) + \\log_2(x-1) = 2\\), maka nilai \\(x\\) yang memenuhi adalah ....",
+                options: ["\\(1\\)", "\\(2\\)", "\\(\\sqrt{5}\\)", "\\(3\\)", "\\(\\sqrt{10}\\)"],
+                answer: "\\(\\sqrt{5}\\)",
+                solution: "Langkah 1: Gunakan sifat logaritma \\(\\log_a b + \\log_a c = \\log_a (bc)\\).<br>\\(\\log_2((x+1)(x-1)) = 2\\)<br>\\(\\log_2(x^2 - 1) = 2\\)<br><br>Langkah 2: Ubah bentuk logaritma ke bentuk eksponen. Ingat, jika \\(\\log_a b = c\\), maka \\(b = a^c\\).<br>\\(x^2 - 1 = 2^2\\)<br>\\(x^2 - 1 = 4\\)<br><br>Langkah 3: Selesaikan persamaan kuadrat untuk \\(x\\).<br>\\(x^2 = 4 + 1\\)<br>\\(x^2 = 5\\)<br>\\(x = \\pm\\sqrt{5}\\)<br><br>Langkah 4: Periksa syarat numerus logaritma. Numerus harus lebih besar dari 0.<br>Untuk \\(\\log_2(x+1)\\): \\(x+1 > 0 \\implies x > -1\\)<br>Untuk \\(\\log_2(x-1)\\): \\(x-1 > 0 \\implies x > 1\\)<br>Kedua syarat ini terpenuhi jika \\(x > 1\\).<br><br>Dari \\(x = \\pm\\sqrt{5}\\), hanya \\(x = \\sqrt{5}\\) (sekitar 2.236) yang memenuhi syarat \\(x > 1\\).<br><br>Jadi, nilai \\(x\\) yang memenuhi adalah \\(\\sqrt{5}\\)."
+            },
+            {
+                id: 2,
+                text: "Diketahui matriks \\(A = \\begin{pmatrix} 2 & 1 \\\\ 3 & x \\end{pmatrix}\\) dan \\(B = \\begin{pmatrix} 1 & 0 \\\\ 4 & 2 \\end{pmatrix}\\). Jika determinan dari \\(AB\\) adalah \\(10\\), maka nilai \\(x\\) adalah ....",
+                options: ["\\(1\\)", "\\(2\\)", "\\(3\\)", "\\(4\\)", "\\(5\\)"],
+                answer: "\\(4\\)",
+                solution: "Langkah 1: Hitung hasil perkalian matriks \\(AB\\).<br>\\(AB = \\begin{pmatrix} (2)(1)+(1)(4) & (2)(0)+(1)(2) \\\\ (3)(1)+(x)(4) & (3)(0)+(x)(2) \\end{pmatrix}\\)<br>\\(AB = \\begin{pmatrix} 2+4 & 0+2 \\\\ 3+4x & 0+2x \\end{pmatrix}\\)<br>\\(AB = \\begin{pmatrix} 6 & 2 \\\\ 3+4x & 2x \\end{pmatrix}\\)<br><br>Langkah 2: Hitung determinan dari matriks \\(AB\\).<br>Untuk matriks \\(\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}\\), determinannya adalah \\(ad - bc\\).<br>\\(\\det(AB) = (6)(2x) - (2)(3+4x)\\)<br>\\(\\det(AB) = 12x - (6 + 8x)\\)<br>\\(\\det(AB) = 12x - 6 - 8x\\)<br>\\(\\det(AB) = 4x - 6\\)<br><br>Langkah 3: Samakan determinan \\(AB\\) dengan \\(10\\) dan selesaikan untuk \\(x\\).<br>\\(4x - 6 = 10\\)<br>\\(4x = 10 + 6\\)<br>\\(4x = 16\\)<br>\\(x = \\frac{16}{4}\\)<br>\\(x = 4\\)<br><br>Jadi, nilai \\(x\\) adalah \\(4\\)."
+            },
+            {
+                id: 3,
+                text: "Diketahui fungsi \\(f(x) = 2x-1\\) dan \\(g(x) = x^2+3\\). Jika \\((f \\circ g)(x) = 17\\), maka nilai \\(x\\) adalah ....",
+                options: ["\\(\\pm 2\\)", "\\(\\pm \\sqrt{5}\\)", "\\(\\pm \\sqrt{6}\\)", "\\(\\pm 3\\)", "\\(\\pm 4\\)"],
+                answer: "\\(\\pm \\sqrt{6}\\)",
+                solution: "Langkah 1: Tentukan fungsi komposisi \\((f \\circ g)(x)\\).<br>\\((f \\circ g)(x) = f(g(x))\\)<br>Substitusikan \\(g(x)\\) ke dalam \\(f(x)\\):<br>\\(f(x^2+3) = 2(x^2+3) - 1\\)<br>\\((f \\circ g)(x) = 2x^2 + 6 - 1\\)<br>\\((f \\circ g)(x) = 2x^2 + 5\\)<br><br>Langkah 2: Samakan \\((f \\circ g)(x)\\) dengan \\(17\\) dan selesaikan untuk \\(x\\).<br>\\(2x^2 + 5 = 17\\)<br>\\(2x^2 = 17 - 5\\)<br>\\(2x^2 = 12\\)<br>\\(x^2 = \\frac{12}{2}\\)<br>\\(x^2 = 6\\)<br>\\(x = \\pm\\sqrt{6}\\)<br><br>Jadi, nilai \\(x\\) adalah \\(\\pm\\sqrt{6}\\)."
+            },
+            {
+                id: 4,
+                text: "Nilai dari \\(\\lim_{x \\to 2} \\frac{x^3 - 8}{x - 2}\\) adalah ....",
+                options: ["\\(0\\)", "\\(4\\)", "\\(8\\)", "\\(12\\)", "Tidak terdefinisi"],
+                answer: "\\(12\\)",
+                solution: "Ini adalah limit bentuk tak tentu \\(\\frac{0}{0}\\) jika \\(x=2\\) disubstitusikan langsung. Kita perlu memfaktorkan pembilang.<br><br>Langkah 1: Faktorkan pembilang menggunakan rumus selisih kubus, \\(a^3 - b^3 = (a-b)(a^2+ab+b^2)\\).<br>Di sini, \\(a = x\\) dan \\(b = 2\\), karena \\(2^3 = 8\\).<br>Jadi, \\(x^3 - 8 = (x-2)(x^2 + 2x + 2^2) = (x-2)(x^2 + 2x + 4)\\).<br><br>Langkah 2: Substitusikan faktorisasi ke dalam limit.<br>\\(\\lim_{x \\to 2} \\frac{(x-2)(x^2 + 2x + 4)}{x - 2}\\)<br><br>Langkah 3: Batalkan faktor \\((x-2)\\) dari pembilang dan penyebut (karena \\(x \\to 2\\), maka \\(x \\neq 2\\), sehingga \\(x-2 \\neq 0\\)).<br>\\(\\lim_{x \\to 2} (x^2 + 2x + 4)\\)<br><br>Langkah 4: Substitusikan \\(x=2\\) ke dalam ekspresi yang disederhanakan.<br>\\(2^2 + 2(2) + 4 = 4 + 4 + 4 = 12\\).<br><br>Jadi, nilai dari \\(\\lim_{x \\to 2} \\frac{x^3 - 8}{x - 2}\\) adalah \\(12\\)."
+            },
+            {
+                id: 5,
+                text: "Dua kelompok siswa, A dan B, mengikuti ujian Matematika. Kelompok A (20 siswa) memiliki nilai rata-rata 75 dengan standar deviasi 5. Kelompok B (25 siswa) memiliki nilai rata-rata 70 dengan standar deviasi 8. Pernyataan mana yang paling tepat menggambarkan kondisi kedua kelompok?",
+                options: [
+                    "Kelompok A lebih cerdas dari kelompok B.",
+                    "Kelompok B lebih konsisten dalam nilainya.",
+                    "Kelompok A memiliki nilai yang lebih tinggi secara rata-rata dan lebih konsisten.",
+                    "Kelompok B memiliki nilai yang lebih rendah secara rata-rata tetapi lebih konsisten.",
+                    "Tidak ada kesimpulan yang bisa ditarik tanpa data lengkap."
+                ],
+                answer: "Kelompok A memiliki nilai yang lebih tinggi secara rata-rata dan lebih konsisten.",
+                solution: "Langkah 1: Analisis nilai rata-rata.<br>Nilai rata-rata kelompok A = 75.<br>Nilai rata-rata kelompok B = 70.<br>Karena \\(75 > 70\\), kelompok A memiliki nilai rata-rata yang lebih tinggi.<br><br>Langkah 2: Analisis standar deviasi untuk konsistensi (penyebaran data).<br>Standar deviasi yang lebih kecil menunjukkan data yang lebih konsisten atau menyebar lebih sedikit dari rata-rata.<br>Standar deviasi kelompok A = 5.<br>Standar deviasi kelompok B = 8.<br>Karena \\(5 < 8\\), nilai-nilai di kelompok A lebih konsisten dibandingkan kelompok B.<br><br>Langkah 3: Gabungkan kedua analisis.<br>Kelompok A memiliki nilai rata-rata yang lebih tinggi dan nilai-nilainya lebih konsisten (penyebarannya lebih kecil).<br><br>Jadi, pernyataan yang paling tepat adalah 'Kelompok A memiliki nilai yang lebih tinggi secara rata-rata dan lebih konsisten'."
+            },
+            {
+                id: 6,
+                text: "Tentukan semua nilai \\(x\\) yang memenuhi \\(\\cos x = -\\frac{1}{2}\\) untuk \\(0^\\circ \\leq x \\leq 360^\\circ\\).",
+                options: ["\\(60^\\circ, 120^\\circ\\)", "\\(120^\\circ, 240^\\circ\\)", "\\(150^\\circ, 210^\\circ\\)", "\\(210^\\circ, 330^\\circ\\)", "\\(30^\\circ, 300^\\circ\\)"],
+                answer: "\\(120^\\circ, 240^\\circ\\)",
+                solution: "Langkah 1: Tentukan sudut referensi. Karena \\(\\cos x = -\\frac{1}{2}\\), nilai absolutnya adalah \\(\\frac{1}{2}\\). Sudut di kuadran I yang cosinusnya \\(\\frac{1}{2}\\) adalah \\(60^\\circ\\). Ini adalah sudut referensi (\\(\\alpha = 60^\\circ\\)).<br><br>Langkah 2: Tentukan kuadran di mana \\(\\cos x\\) bernilai negatif.<br>Cosinus negatif berada di Kuadran II dan Kuadran III.<br><br>Langkah 3: Hitung nilai \\(x\\) di Kuadran II.<br>Di Kuadran II, \\(x = 180^\\circ - \\alpha\\)<br>\\(x = 180^\\circ - 60^\\circ = 120^\\circ\\).<br><br>Langkah 4: Hitung nilai \\(x\\) di Kuadran III.<br>Di Kuadran III, \\(x = 180^\\circ + \\alpha\\)<br>\\(x = 180^\\circ + 60^\\circ = 240^\\circ\\).<br><br>Langkah 5: Verifikasi bahwa nilai-nilai ini berada dalam interval \\(0^\\circ \\leq x \\leq 360^\\circ\\).<br>Kedua nilai, \\(120^\\circ\\) dan \\(240^\\circ\\), berada dalam interval tersebut.<br><br>Jadi, semua nilai \\(x\\) yang memenuhi adalah \\(120^\\circ\\) dan \\(240^\\circ\\)."
+            },
+            {
+                id: 7,
+                text: "Dari sebuah kelompok yang terdiri dari 5 pria dan 4 wanita, akan dipilih sebuah komite beranggotakan 3 orang. Berapa banyak cara komite dapat dibentuk jika komite tersebut harus memiliki setidaknya 2 wanita?",
+                options: ["\\(16\\)", "\\(24\\)", "\\(34\\)", "\\(44\\)", "\\(56\\)"],
+                answer: "\\(34\\)",
+                solution: "Komite harus beranggotakan 3 orang dengan setidaknya 2 wanita.<br>Ini berarti ada dua kemungkinan komposisi komite:<br>1. 2 wanita dan 1 pria<br>2. 3 wanita dan 0 pria<br><br>Langkah 1: Hitung cara memilih 2 wanita dan 1 pria.<br>Jumlah wanita = 4, jumlah pria = 5.<br>Memilih 2 wanita dari 4: \\(C(4, 2) = \\frac{4!}{2!(4-2)!} = \\frac{4 \\times 3}{2 \\times 1} = 6\\) cara.<br>Memilih 1 pria dari 5: \\(C(5, 1) = \\frac{5!}{1!(5-1)!} = 5\\) cara.<br>Jumlah cara untuk komposisi ini = \\(C(4, 2) \\times C(5, 1) = 6 \\times 5 = 30\\) cara.<br><br>Langkah 2: Hitung cara memilih 3 wanita dan 0 pria.<br>Memilih 3 wanita dari 4: \\(C(4, 3) = \\frac{4!}{3!(4-3)!} = \\frac{4 \\times 3 \\times 2}{3 \\times 2 \\times 1} = 4\\) cara.<br>Memilih 0 pria dari 5: \\(C(5, 0) = 1\\) cara.<br>Jumlah cara untuk komposisi ini = \\(C(4, 3) \\times C(5, 0) = 4 \\times 1 = 4\\) cara.<br><br>Langkah 3: Jumlahkan total cara dari kedua komposisi.<br>Total cara = \\(30 + 4 = 34\\) cara.<br><br>Jadi, ada \\(34\\) cara untuk membentuk komite tersebut."
+            },
+            {
+                id: 8,
+                text: "Dua bilangan positif berjumlah 20. Tentukan hasil kali maksimum dari kedua bilangan tersebut.",
+                options: ["\\(90\\)", "\\(96\\)", "\\(100\\)", "\\(104\\)", "\\(110\\)"],
+                answer: "\\(100\\)",
+                solution: "Langkah 1: Definisikan kedua bilangan.<br>Misalkan kedua bilangan positif tersebut adalah \\(a\\) dan \\(b\\).<br>Diketahui \\(a + b = 20\\). Dari sini, kita bisa menyatakan \\(b = 20 - a\\).<br><br>Langkah 2: Definisikan fungsi yang ingin dimaksimumkan (hasil kali).<br>Misalkan hasil kali kedua bilangan adalah \\(P\\).<br>\\(P = a \\times b\\)<br>Substitusikan \\(b = 20 - a\\) ke dalam persamaan \\(P\\).<br>\\(P(a) = a(20 - a) = 20a - a^2\\).<br><br>Langkah 3: Cari nilai \\(a\\) yang membuat \\(P(a)\\) maksimum.<br>Fungsi \\(P(a) = -a^2 + 20a\\) adalah fungsi kuadrat yang grafiknya parabola terbuka ke bawah, jadi memiliki titik maksimum.<br>Titik maksimum terjadi saat turunan pertama \\(P'(a) = 0\\).<br>\\(P'(a) = \\frac{d}{da}(20a - a^2) = 20 - 2a\\).<br>Setel \\(P'(a) = 0\\):<br>\\(20 - 2a = 0\\)<br>\\(2a = 20\\)<br>\\(a = 10\\).<br><br>Langkah 4: Hitung nilai \\(b\\).<br>Jika \\(a = 10\\), maka \\(b = 20 - 10 = 10\\).<br><br>Langkah 5: Hitung hasil kali maksimum.<br>\\(P_{maks} = a \\times b = 10 \\times 10 = 100\\).<br><br>Jadi, hasil kali maksimum dari kedua bilangan tersebut adalah \\(100\\)."
+            },
+            {
+                id: 9,
+                text: "Tentukan koordinat titik pusat dan jari-jari lingkaran dengan persamaan \\(x^2 + y^2 - 6x + 4y - 12 = 0\\).",
+                options: [
+                    "Pusat \\((3, -2)\\), jari-jari \\(5\\)",
+                    "Pusat \\((-3, 2)\\), jari-jari \\(5\\)",
+                    "Pusat \\((3, -2)\\), jari-jari \\(\\sqrt{12}\\)",
+                    "Pusat \\((-3, 2)\\), jari-jari \\(\\sqrt{12}\\)",
+                    "Pusat \\((6, -4)\\), jari-jari \\(12\\)"
+                ],
+                answer: "Pusat \\((3, -2)\\), jari-jari \\(5\\)",
+                solution: "Persamaan umum lingkaran adalah \\(x^2 + y^2 + Ax + By + C = 0\\).<br>Dari persamaan \\(x^2 + y^2 - 6x + 4y - 12 = 0\\), kita punya:<br>\\(A = -6\\)<br>\\(B = 4\\)<br>\\(C = -12\\)<br><br>Langkah 1: Tentukan koordinat titik pusat \\((P_x, P_y)\\).<br>Rumus titik pusat: \\(P_x = -\\frac{A}{2}\\) dan \\(P_y = -\\frac{B}{2}\\).<br>\\(P_x = -\\frac{-6}{2} = 3\\)<br>\\(P_y = -\\frac{4}{2} = -2\\)<br>Jadi, titik pusat lingkaran adalah \\((3, -2)\\).<br><br>Langkah 2: Tentukan jari-jari \\(r\\).<br>Rumus jari-jari: \\(r = \\sqrt{(\\frac{A}{2})^2 + (\\frac{B}{2})^2 - C}\\)<br>Atau, setelah menemukan pusat \\((P_x, P_y)\\): \\(r = \\sqrt{P_x^2 + P_y^2 - C}\\).<br>\\(r = \\sqrt{3^2 + (-2)^2 - (-12)}\\)<br>\\(r = \\sqrt{9 + 4 + 12}\\)<br>\\(r = \\sqrt{25}\\)<br>\\(r = 5\\).<br><br>Jadi, koordinat titik pusat adalah \\((3, -2)\\) dan jari-jari lingkaran adalah \\(5\\)."
+            },
+            {
+                id: 10,
+                text: "Dalam sebuah survei terhadap 100 orang, ditemukan bahwa 60 orang menyukai kopi, 50 orang menyukai teh, dan 20 orang tidak menyukai keduanya. Berapa banyak orang yang hanya menyukai kopi?",
+                options: ["\\(10\\)", "\\(20\\)", "\\(30\\)", "\\(40\\)", "\\(50\\)"],
+                answer: "\\(30\\)",
+                solution: "Langkah 1: Gunakan prinsip himpunan (Venn Diagram).<br>Total orang = \\(100\\)<br>Suka Kopi \\((K)\\) = \\(60\\)<br>Suka Teh \\((T)\\) = \\(50\\)<br>Tidak Suka Keduanya \\((K \\cup T)'\\) = \\(20\\)<br><br>Langkah 2: Hitung jumlah orang yang menyukai setidaknya satu dari keduanya (Suka Kopi atau Teh).<br>Jumlah orang yang suka setidaknya satu = Total - Tidak Suka Keduanya<br>\\(n(K \\cup T) = 100 - 20 = 80\\).<br><br>Langkah 3: Gunakan rumus gabungan himpunan untuk menemukan jumlah orang yang menyukai keduanya (interseksi).<br>\\(n(K \\cup T) = n(K) + n(T) - n(K \\cap T)\\)<br>\\(80 = 60 + 50 - n(K \\cap T)\\)<br>\\(80 = 110 - n(K \\cap T)\\)<br>\\(n(K \\cap T) = 110 - 80 = 30\\).<br>Jadi, 30 orang menyukai kopi dan teh.<br><br>Langkah 4: Hitung jumlah orang yang hanya menyukai kopi.<br>Hanya menyukai kopi = (Suka Kopi) - (Suka Keduanya)<br>\\(n(\\text{hanya K}) = n(K) - n(K \\cap T)\\)<br>\\(n(\\text{hanya K}) = 60 - 30 = 30\\).<br><br>Jadi, ada \\(30\\) orang yang hanya menyukai kopi."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        const userAnswers = new Array(questions.length).fill(null);
+        let timeLeft = 30 * 60; // 60 minutes in seconds
+        let timerInterval;
+        let isReviewMode = false; // New flag for review mode
+
+        // Get DOM elements
+        const questionArea = document.getElementById('question-area');
+        const questionListContainer = document.getElementById('question-list');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const finishExamButton = document.getElementById('finish-exam-button');
+        const countdownTimerDisplay = document.getElementById('countdown-timer');
+        const currentTimeDisplay = document.querySelector('#current-time strong');
+        const scoreModal = document.getElementById('scoreModal');
+        const finalScoreDisplay = document.getElementById('finalScore');
+        const feedbackMessage = document.getElementById('feedbackMessage');
+        const closeModalButton = document.getElementById('closeModal');
+        const examNavigationDiv = document.getElementById('exam-navigation');
+        const examFinishDiv = document.getElementById('exam-finish');
+
+
+        // Function to render MathJax equations
+        function renderMathJax() {
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        // Function to load and display a question
+        function loadQuestion(index) {
+            currentQuestionIndex = index;
+            const question = questions[index];
+            let optionsHtml = '';
+
+            question.options.forEach((option, i) => {
+                const optionId = `q${question.id}-option${i}`;
+                const isChecked = userAnswers[index] === option;
+                const isCorrect = question.answer === option;
+                
+                let labelClass = '';
+                if (isReviewMode) {
+                    if (isCorrect) {
+                        labelClass = 'correct-answer-label';
+                    } else if (isChecked && !isCorrect) {
+                        labelClass = 'wrong-answer-label';
+                    } else if (isChecked && isCorrect) {
+                        // User's correct answer, might want a specific highlight for user's correct choice
+                        labelClass = 'user-answer-label correct-answer-label';
+                    }
+                }
+
+                optionsHtml += `
+                    <label for="${optionId}" class="${labelClass}">
+                        <input type="radio" id="${optionId}" name="question${question.id}" value="${option}" ${isChecked ? 'checked' : ''} ${isReviewMode ? 'disabled' : ''}>
+                        ${option}
+                    </label>
+                `;
+            });
+
+            let solutionSection = '';
+            let optionsAreaClass = 'options';
+            if (isReviewMode) {
+                optionsAreaClass += ' review';
+                solutionSection = `
+                    <button class="review-solution-button" onclick="toggleSolution(${question.id})">Tampilkan Solusi</button>
+                    <div id="solution-${question.id}" class="solution-text">
+                        <p><strong>Solusi:</strong></p>
+                        <p>${question.solution}</p>
+                    </div>
+                `;
+            }
+
+            questionArea.innerHTML = `
+                <h2>Soal No. ${question.id}</h2>
+                <div class="question-text">${question.text}</div>
+                <div class="${optionsAreaClass}">
+                    ${optionsHtml}
+                </div>
+                ${solutionSection}
+            `;
+            
+            // Add event listeners to radio buttons only in exam mode
+            if (!isReviewMode) {
+                const radioButtons = questionArea.querySelectorAll('input[type="radio"]');
+                radioButtons.forEach(radio => {
+                    radio.addEventListener('change', (event) => {
+                        saveAnswer(index, event.target.value);
+                    });
+                });
+            }
+            
+            updateNavigationButtons();
+            updateQuestionListColors();
+            renderMathJax(); // Render any new math elements
+        }
+
+        // Function to toggle solution visibility
+        function toggleSolution(questionId) {
+            const solutionDiv = document.getElementById(`solution-${questionId}`);
+            // Select the button within the current question area to avoid toggling all buttons
+            const button = questionArea.querySelector('.review-solution-button'); 
+            if (solutionDiv.style.display === 'none' || solutionDiv.style.display === '') {
+                solutionDiv.style.display = 'block';
+                button.textContent = 'Sembunyikan Solusi';
+            } else {
+                solutionDiv.style.display = 'none';
+                button.textContent = 'Tampilkan Solusi';
+            }
+            renderMathJax(); // Re-render MathJax in case solution content was hidden/displayed
+        }
+
+        // Function to save user's answer
+        function saveAnswer(questionIndex, value) {
+            userAnswers[questionIndex] = value;
+            updateQuestionListColors();
+        }
+
+        // Function to update navigation buttons (Prev/Next) state
+        function updateNavigationButtons() {
+            prevButton.disabled = currentQuestionIndex === 0;
+            nextButton.disabled = currentQuestionIndex === questions.length - 1;
+        }
+
+        // Function to update question list buttons (color coding)
+        function updateQuestionListColors() {
+            questionListContainer.innerHTML = '';
+            questions.forEach((q, index) => {
+                const button = document.createElement('button');
+                button.textContent = q.id;
+                button.onclick = () => loadQuestion(index);
+                if (index === currentQuestionIndex) {
+                    button.classList.add('active');
+                }
+                if (userAnswers[index] !== null) {
+                    button.classList.add('answered');
+                }
+                questionListContainer.appendChild(button);
+            });
+        }
+
+        // Function to start the countdown timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                const hours = Math.floor(timeLeft / 3600);
+                const minutes = Math.floor((timeLeft % 3600) / 60);
+                const seconds = timeLeft % 60;
+
+                countdownTimerDisplay.textContent = 
+                    `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert('Waktu ujian habis!');
+                    finishExam();
+                }
+                timeLeft--;
+            }, 1000);
+        }
+
+        // Function to update current time display
+        function updateCurrentTime() {
+            const now = new Date();
+            currentTimeDisplay.textContent = now.toLocaleString('id-ID', {
+                weekday: 'long', year: 'numeric', month: 'long', 
+                day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'
+            });
+        }
+
+        // Function to calculate the final score
+        function calculateScore() {
+            let correctAnswers = 0;
+            questions.forEach((q, index) => {
+                if (userAnswers[index] === q.answer) {
+                    correctAnswers++;
+                }
+            });
+            return (correctAnswers / questions.length) * 100;
+        }
+
+        // Function to finalize the exam and show the score modal
+        function finishExam() {
+            clearInterval(timerInterval);
+            const score = calculateScore();
+            finalScoreDisplay.textContent = `${score.toFixed(2)}%`;
+            if (score >= 80) {
+                feedbackMessage.textContent = "Selamat! Anda mendapatkan skor yang sangat baik.";
+                finalScoreDisplay.style.color = "#28a745";
+            } else if (score >= 60) {
+                feedbackMessage.textContent = "Cukup baik, terus tingkatkan kemampuan Anda.";
+                finalScoreDisplay.style.color = "#ffc107";
+            } else {
+                feedbackMessage.textContent = "Perlu lebih banyak belajar dan berlatih.";
+                finalScoreDisplay.style.color = "#dc3545";
+            }
+            scoreModal.style.display = 'flex';
+        }
+
+        // Function to switch to review mode after the exam
+        function enterReviewMode() {
+            isReviewMode = true;
+            // Hide exam-specific elements
+            document.querySelector('.timer-box').style.display = 'none';
+            examFinishDiv.style.display = 'none';
+            examNavigationDiv.style.justifyContent = 'center'; // Center navigation buttons
+
+            // Add an info message about review mode
+            const reviewInfo = document.createElement('div');
+            reviewInfo.classList.add('review-mode-info');
+            reviewInfo.textContent = 'Anda dalam mode review. Jawaban yang benar ditandai hijau, dan jawaban Anda (jika salah) ditandai merah. Klik tombol "Tampilkan Solusi" untuk melihat langkah penyelesaian.';
+            questionArea.insertAdjacentElement('beforebegin', reviewInfo);
+
+            loadQuestion(0); // Load the first question in review mode
+        }
+
+        // Event Listeners
+        prevButton.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                loadQuestion(currentQuestionIndex - 1);
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentQuestionIndex < questions.length - 1) {
+                loadQuestion(currentQuestionIndex + 1);
+            }
+        });
+
+        finishExamButton.addEventListener('click', () => {
+            if (confirm('Apakah Anda yakin ingin mengakhiri ujian? Waktu akan berhenti dan jawaban akan dinilai.')) {
+                finishExam();
+            }
+        });
+
+        closeModalButton.addEventListener('click', () => {
+            scoreModal.style.display = 'none';
+            enterReviewMode();
+        });
+
+        // Initialize the exam when the window loads
+        window.onload = () => {
+            loadQuestion(currentQuestionIndex);
+            startTimer();
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000); // Update current time every second
+        };
+    </script>
+</body>
+</html>
